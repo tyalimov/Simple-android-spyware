@@ -11,7 +11,6 @@ public class CallsCollector
 {
     static String GetCalls(Context context)
     {
-        long dialed;
         Cursor cursor;
 
         cursor = context.getContentResolver().query(Uri.parse("content://call_log/calls"),
@@ -27,7 +26,7 @@ public class CallsCollector
             String date        = cursor.getString(cursor.getColumnIndex(CallLog.Calls.DATE));
             String duration    = cursor.getString(cursor.getColumnIndex(CallLog.Calls.DURATION));
             String type        = cursor.getString(cursor.getColumnIndex(CallLog.Calls.TYPE));
-            dialed             = cursor.getLong  (cursor.getColumnIndex(CallLog.Calls.DATE));
+            long dialed        = cursor.getLong  (cursor.getColumnIndex(CallLog.Calls.DATE));
 
             result += "Type: [" + type + "]\nID: [" + contact_id + "]\nNumber: [" + number +
                     "]\nDuration: [" + duration + "]\nDate: [" + date + "]\n" +
