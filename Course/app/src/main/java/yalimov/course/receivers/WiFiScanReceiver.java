@@ -24,7 +24,7 @@ public abstract class WiFiScanReceiver extends BroadcastReceiver
     public void onReceive(Context c, Intent intent)
     {
         Networks.clear();
-        Networks.addAll(((WifiManager)context.getApplicationContext().getSystemService(WIFI_SERVICE)).getScanResults());
+        Networks.addAll(((WifiManager)context.getSystemService(WIFI_SERVICE)).getScanResults());
     }
 }
 
