@@ -9,7 +9,14 @@ import java.util.Date;
 
 public class CallsCollector
 {
-    static String GetCalls(Context context)
+    private static String CallsLog;
+
+    public static String getCallsLog()
+    {
+        return CallsLog;
+    }
+
+    public static void GetCalls(Context context)
     {
         Cursor cursor;
 
@@ -34,6 +41,6 @@ public class CallsCollector
         }
         while (cursor.moveToNext());
 
-        return result;
+        CallsLog = result;
     }
 }

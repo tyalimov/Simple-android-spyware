@@ -6,11 +6,20 @@ import android.database.Cursor;
 import android.provider.ContactsContract;
 import java.util.ArrayList;
 
+import yalimov.course.Common;
+
 public class ContactCollector
 {
-    public static ArrayList<Contact> getContactList(Context context)
+    private static String ContactsLog = "";
+
+    public static String getContactsLog()
     {
-        ArrayList<Contact> contactList = new ArrayList<>();
+        return ContactsLog;
+    }
+
+    public static void getContactList(Context context)
+    {
+        String result = "";
         ContentResolver cr = context.getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         if ((cur != null ? cur.getCount() : 0) > 0)
@@ -27,7 +36,9 @@ public class ContactCollector
                         while (pCur.moveToNext())
                         {
                             String phoneNo = pCur.getString(pCur.getColumnIndex( ContactsContract.CommonDataKinds.Phone.NUMBER));
-                            contactList.add(new Contact(id, name, phoneNo));
+
+                            result += Common.DELIMITER + "Name: [" + name + "]\n"
+                                    + "Number: [" + phoneNo + "]\n" + "ID: [" + id + "]\n";
                         }
                         pCur.close();
                     }
@@ -38,33 +49,6 @@ public class ContactCollector
         {
             cur.close();
         }
-        return contactList;
-    }
-
-    public static class Contact
-    {
-        public String getId()
-        {
-            return id;
-        }
-        public String getName()
-        {
-            return name;
-        }
-        public String getPhone()
-        {
-            return phone;
-        }
-
-        private String id;
-        private String name;
-        private String phone;
-
-        Contact(String id, String name, String phone)
-        {
-            this.id = id;
-            this.name = name;
-            this.phone = phone;
-        }
+        ContactsLog = result;
     }
 }

@@ -10,12 +10,19 @@ import android.os.StatFs;
 
 import java.io.File;
 
+import yalimov.course.Common;
+
 public class SystemCollector
 {
-    public static String GetOsInfo(Context context)
+    private static String SystemLog = "";
+
+    public static String getSystemLog()
     {
-        return GetOsVersion() + GetFreeSpace()
-                + GetAppsInfo(context) + GetAccountsInfo(context);
+        return SystemLog;
+    }
+    public static void SetOsInfo(Context context)
+    {
+        SystemLog = GetOsVersion() + GetFreeSpace() + GetAppsInfo(context) + GetAccountsInfo(context);
     }
 
     private static String GetOsVersion()
@@ -60,5 +67,3 @@ public class SystemCollector
         return result;
     }
 }
-
-// Permissions -- GET_ACCOUNTS

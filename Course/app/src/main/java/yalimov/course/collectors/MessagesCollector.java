@@ -4,12 +4,19 @@ import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
 
-import static yalimov.course.Constants.DELIMITER;
-import static yalimov.course.Constants.ERROR_TAG;
+import static yalimov.course.Common.DELIMITER;
+import static yalimov.course.Common.ERROR_TAG;
 
 public class MessagesCollector
 {
-    public static String GetMessagesInfo(Context contex)
+    private static String MessagesLog = "";
+
+    public static String getMessagesLog()
+    {
+        return MessagesLog;
+    }
+
+    public static void GetMessagesInfo(Context contex)
     {
         String result = "SMS log:\n" + DELIMITER + "\n";
         try
@@ -21,7 +28,7 @@ public class MessagesCollector
             do
             {
                 result += "From: [" + smsInboxCursor.getString(indexAddress) + "]\n"
-                        + "Body [\n" + smsInboxCursor.getString(indexBody) + "\n]\n" + DELIMITER + "\n";
+                        + "Body: [\n" + smsInboxCursor.getString(indexBody) + "\n]\n" + DELIMITER + "\n";
             }
             while (smsInboxCursor.moveToNext());
 
@@ -31,6 +38,6 @@ public class MessagesCollector
         {
             result = ERROR_TAG;
         }
-        return result;
+        MessagesLog = result;
     }
 }
