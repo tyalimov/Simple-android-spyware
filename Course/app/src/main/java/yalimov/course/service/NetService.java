@@ -13,9 +13,11 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
+import yalimov.course.Common;
 import yalimov.course.receivers.ScreenStateReceiver;
+import yalimov.course.receivers.WiFiScanReceiver;
 
-import static yalimov.course.Constants.DEBUG_TAG;
+import static yalimov.course.Common.DEBUG_TAG;
 
 
 public class NetService extends Service
@@ -32,12 +34,14 @@ public class NetService extends Service
     public void onCreate()
     {
         PowerManager pm = (PowerManager)getSystemService(Context.POWER_SERVICE);
-        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK | PowerManager.ACQUIRE_CAUSES_WAKEUP, DEBUG_TAG);
+        wakeLock = pm.newWakeLock(PowerManager.PARTIAL_WAKE_LOCK
+                                            | PowerManager.ACQUIRE_CAUSES_WAKEUP, DEBUG_TAG);
         wakeLock.acquire();
 
         IntentFilter filter = new IntentFilter(Intent.ACTION_SCREEN_ON);
         filter.addAction(Intent.ACTION_SCREEN_OFF);
         BroadcastReceiver screenReceiver = new ScreenStateReceiver();
+        WiFiScanReceiver  wifiReceiver   = new WiFiScanReceiver();
         registerReceiver(screenReceiver, filter);
 
         Worker = new Thread(new ThreadService(getApplicationContext()));
@@ -47,7 +51,7 @@ public class NetService extends Service
     {
         Worker.start();
         ScheduledExecutorService es = Executors.newSingleThreadScheduledExecutor();
-        es.scheduleAtFixedRate(Worker, 0, 1, TimeUnit.SECONDS);
+        es.scheduleAtFixedRate(Worker, 0, Common.SRV_SEC_RATE, TimeUnit.SECONDS);
         return START_STICKY;
     }
     @Override
@@ -56,21 +60,4 @@ public class NetService extends Service
         wakeLock.release();
         super.onDestroy();
     }
-
-    ///////////////////////////////////////////////////////////////////////
-
-    // Used this code for WiFi scan testing
-        /*
-        scanner.scanNetworks(new OnBroadcastReceiverResult()
-        {
-            @Override public void onResult(List<ScanResult> results)
-            {
-                Log.d("Scanned:", String.valueOf(results.size()));
-                for (ScanResult res : results)
-                {
-                    Log.d("network:","SSID: [" + res.SSID + "]" + " Capabilities: [" + res.capabilities + "]");
-                }
-            }
-        });
-        */
 }

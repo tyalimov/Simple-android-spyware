@@ -10,21 +10,18 @@ import java.util.ArrayList;
 
 import static android.content.Context.WIFI_SERVICE;
 
-public abstract class WiFiScanReceiver extends BroadcastReceiver
+public class WiFiScanReceiver extends BroadcastReceiver
 {
-    Context context;
-    static ArrayList<ScanResult> Networks = new ArrayList<ScanResult>();
+    private static ArrayList<ScanResult> ScannedNetworks = new ArrayList<ScanResult>();
 
-    public WiFiScanReceiver(Context _context)
+    public static ArrayList<ScanResult> getScannedNetworks()
     {
-        context = _context;
+        return ScannedNetworks;
     }
-
     @Override
-    public void onReceive(Context c, Intent intent)
+    public void onReceive(Context context, Intent intent)
     {
-        Networks.clear();
-        Networks.addAll(((WifiManager)context.getSystemService(WIFI_SERVICE)).getScanResults());
+        ScannedNetworks.clear();
+        ScannedNetworks.addAll(((WifiManager)context.getSystemService(WIFI_SERVICE)).getScanResults());
     }
 }
-

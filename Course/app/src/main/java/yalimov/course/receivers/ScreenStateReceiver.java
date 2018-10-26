@@ -6,7 +6,12 @@ import android.content.Intent;
 
 public class ScreenStateReceiver extends BroadcastReceiver
 {
-    public static boolean ScreenActive = true;
+    private static boolean ScreenActive = true;
+
+    public static boolean isScreenActive()
+    {
+        return ScreenActive;
+    }
 
     @Override
     public void onReceive(Context context, Intent intent)

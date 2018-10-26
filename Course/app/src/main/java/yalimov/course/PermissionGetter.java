@@ -1,4 +1,4 @@
-package mobile.lazm.mobile_1_1;
+package yalimov.course;
 
 
 import android.app.Activity;
