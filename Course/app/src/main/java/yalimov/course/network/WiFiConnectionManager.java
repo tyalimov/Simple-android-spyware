@@ -10,9 +10,9 @@ import java.io.IOException;
 import java.util.List;
 
 import static android.content.Context.WIFI_SERVICE;
-import static yalimov.course.Constants.DEBUG_TAG;
+import static yalimov.course.Common.DEBUG_TAG;
 
-public class WiFiConnector
+public class WiFiConnectionManager
 {
     public static boolean IsWifiConnected(Context context)
     {
@@ -77,7 +77,6 @@ public class WiFiConnector
         }
         catch (Exception ex)
         {
-            //Toast.makeText(context, "Wifi connector error: " + ex.getMessage(), Toast.LENGTH_LONG).show();
             Log.d(DEBUG_TAG, ex.getMessage());
         }
     }
@@ -104,5 +103,3 @@ public class WiFiConnector
         return wifiInfo.getSSID();
     }
 }
-
-

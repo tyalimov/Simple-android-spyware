@@ -7,7 +7,9 @@ import android.util.Log;
 
 import yalimov.course.service.NetService;
 
-import static yalimov.course.Constants.DEBUG_TAG;
+import static yalimov.course.Common.DEBUG_TAG;
+
+// TODO: Uploading, Getting, Saving state, Searching free networks.
 
 public class Main extends Activity
 {
