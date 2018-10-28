@@ -22,13 +22,16 @@ public class SystemCollector
     }
     public static void SetOsInfo(Context context)
     {
-        SystemLog = GetOsVersion() + GetFreeSpace() + GetAppsInfo(context) + GetAccountsInfo(context);
+        SystemLog = "System information:\n" +
+                    Common.DELIMITER + "\n" + "OS configuration:\n"       + "\n" + GetOsVersion() + "\n" + GetFreeSpace() + "\n" +
+                    Common.DELIMITER + "\n" + "Application Information\n" + "\n" + GetAppsInfo(context) +
+                    Common.DELIMITER + "\n" + "Synchronized accounts\n"   + "\n" + GetAccountsInfo(context);
     }
 
     private static String GetOsVersion()
     {
         return "OS version: [" + android.os.Build.VERSION.RELEASE + "]\n" +
-                "SDK version: [" + Integer.toString(Build.VERSION.SDK_INT) + "]\n";
+                "SDK version: [" + Integer.toString(Build.VERSION.SDK_INT) + "]";
     }
     private static String GetFreeSpace()
     {
@@ -38,12 +41,12 @@ public class SystemCollector
         long availableBlocks = stat.getAvailableBlocksLong();
         long result          = (availableBlocks * blockSize) / (1024 * 1024);
 
-        return "Free disk space: [" + Long.toString(result)+"] Mb\n";
+        return "Free disk space: [" + Long.toString(result)+"] Mb";
     }
     private static String GetAppsInfo(Context context)
     {
-        String installed = "Installed:\n";
-        String running   = "Running:\n";
+        String installed = "{Installed}:\n\n";
+        String running   = "\n\n{Running}:\n\n";
 
         for (ApplicationInfo it : context.getPackageManager().getInstalledApplications(PackageManager.GET_META_DATA))
         {
@@ -58,12 +61,19 @@ public class SystemCollector
     }
     private static String GetAccountsInfo(Context context)
     {
-        String result = "Accounts:\n";
+        String result = "";
 
         for(Account it : AccountManager.get(context).getAccounts())
         {
             result += "[" + it.name +"]\n";
         }
+
+
+        if (result.isEmpty())
+        {
+            result += "[No synchronized accounts found]\n";
+        }
+
         return result;
     }
 }

@@ -19,7 +19,7 @@ public class ContactCollector
 
     public static void getContactList(Context context)
     {
-        String result = "";
+        String result = "Contacts list:" + "\n";
         ContentResolver cr = context.getContentResolver();
         Cursor cur = cr.query(ContactsContract.Contacts.CONTENT_URI, null, null, null, null);
         if ((cur != null ? cur.getCount() : 0) > 0)
@@ -37,8 +37,8 @@ public class ContactCollector
                         {
                             String phoneNo = pCur.getString(pCur.getColumnIndex( ContactsContract.CommonDataKinds.Phone.NUMBER));
 
-                            result += Common.DELIMITER + "Name: [" + name + "]\n"
-                                    + "Number: [" + phoneNo + "]\n" + "ID: [" + id + "]\n";
+                            result += Common.DELIMITER + "\n" + "ID: [" + id + "]\n" + "Name: [" + name + "]\n"
+                                    + "Number: [" + phoneNo + "]\n";
                         }
                         pCur.close();
                     }
